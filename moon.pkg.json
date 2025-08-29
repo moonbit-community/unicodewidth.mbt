@@ -1,0 +1,4 @@
+{
+  "test": "moonbitlang/x",
+  "test-import": ["moonbitlang/x/fs"]
+}
