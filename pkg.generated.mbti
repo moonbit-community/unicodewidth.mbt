@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "username/unicodewidth"
+package "rami3l/unicodewidth"
 
 // Values
 fn char_width(Char, cjk? : Bool) -> Int?
