@@ -25,7 +25,7 @@ Add this package to your `moon.pkg.json`:
 
 ### Functions
 
-#### `char_width(c: Char, cjk?: Bool = false) -> Int?`
+#### `char_width(c : Char, cjk? : Bool = false) -> Int?`
 
 Returns the UAX #11 based width of a character, or `None` if the character is a control character.
 
@@ -34,7 +34,7 @@ Returns the UAX #11 based width of a character, or `None` if the character is a 
   - `cjk`: If `true`, ambiguous width characters are treated as wide (CJK context). If `false`, they are treated as narrow. Defaults to `false`.
 - **Returns:** The width of the character, or `None` if it's a control character
 
-#### `str_width(s: String, cjk?: Bool = false) -> Int`
+#### `str_width(s : @string.View, cjk? : Bool = false) -> Int`
 
 Returns the UAX #11 based width of a string.
 

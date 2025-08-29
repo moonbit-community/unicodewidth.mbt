@@ -24,6 +24,6 @@ pub fn char_width(c : Char, cjk? : Bool = false) -> Int? {
 /// @param cjk If true, ambiguous width characters are treated as wide (CJK context).
 ///            If false, they are treated as narrow. Defaults to true.
 /// @return The total width of the string
-pub fn str_width(s : String, cjk? : Bool = false) -> Int {
+pub fn str_width(s : @string.View, cjk? : Bool = false) -> Int {
   (if cjk { str_width_cjk_impl } else { str_width_impl })(s)
 }
