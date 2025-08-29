@@ -2169,7 +2169,7 @@ def main(module_path: str):
 
     normalization_tests = load_normalization_tests()
 
-    fetch_open("emoji-test.txt", "../tests", emoji=True)
+    fetch_open("emoji-test.txt", "../", emoji=True)
 
     print("------------------------")
     total_size = 0
