@@ -1,14 +1,12 @@
-all: info
+all: tables.mbt
 	moon build
 .PHONY: all
 
-info: tables.mbt
-	moon info
+info: pkg.generated.mbti
 .PHONY: info
 
-test: all
-	moon test
-.PHONY: test
+pkg.generated.mbti: tables.mbt
+	moon info
 
 tables.mbt:
 	cd scripts && ./unicode.py
@@ -20,6 +18,5 @@ clean:
 .PHONY: clean
 
 clean-all: clean
-	rm *.mbti
 	rm tables.mbt
 .PHONY: clean-all
