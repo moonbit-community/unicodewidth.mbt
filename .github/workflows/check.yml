@@ -1,0 +1,95 @@
+name: check
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  schedule:
+    - cron: "30 0 * * 1" # Every Monday at half past midnight UTC
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - name: ubuntu-latest
+          - name: macos-latest
+          - name: windows-latest
+
+    runs-on: ${{ matrix.os.name }}
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install
+        if: ${{ matrix.os.name != 'windows-latest' }}
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- pre-release
+          echo "$HOME/.moon/bin" >> $GITHUB_PATH
+
+      - name: install on windows
+        env:
+          MOONBIT_INSTALL_VERSION: pre-release
+        if: ${{ matrix.os.name == 'windows-latest' }}
+        run: |
+          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser; irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+          "C:\Users\runneradmin\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: moon version
+        run: |
+          moon version --all
+          moonrun --version
+
+      - name: moon check
+        run: |
+          moon update
+          make clean-all
+          make all
+          git diff --exit-code
+
+      - name: moon info and moon fmt
+        run: |
+          make info
+          moon fmt
+          git diff --exit-code
+
+      - name: moon test
+        env:
+          OCAMLRUNPARAM: b
+        run: |
+          moon test --target wasm
+          moon test --target wasm --release
+          # moon test --target wasm-gc
+          # moon test --target wasm-gc --release
+          moon test --target js
+          moon test --target js --release
+          moon test --target native
+          moon test --target native --release
+
+  coverage-check:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- pre-release
+          echo "$HOME/.moon/bin" >> $GITHUB_PATH
+
+      - name: moon test
+        run: |
+          moon update
+          moon test --enable-coverage
+
+      - name: coverage report
+        run: |
+          moon coverage report -f summary > coverage_summary.txt
+          # Put the coverage report in the pipline output
+          cat coverage_summary.txt >> "$GITHUB_STEP_SUMMARY"
