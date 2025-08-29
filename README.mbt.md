@@ -203,8 +203,8 @@ The library includes comprehensive tests covering:
 
 Run tests with:
 
-```bash
-make test
+```console
+> moon test
 ```
 
 ## License
