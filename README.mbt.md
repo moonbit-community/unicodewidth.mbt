@@ -2,6 +2,8 @@
 
 A MoonBit library for measuring the width of Unicode characters and strings according to the [Unicode Standard Annex #11 (UAX #11)](https://www.unicode.org/reports/tr11/) specification.
 
+This is a direct MoonBit port of Rust's [`unicode-width`](https://github.com/unicode-rs/unicode-width) crate.
+
 ## Overview
 
 This library provides functions to determine the display width of Unicode characters and strings, which is essential for:
