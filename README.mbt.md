@@ -54,17 +54,17 @@ A constant tuple representing the Unicode version this library supports.
 ```mbt
 test {
   // ASCII characters have width 1
-  assert_eq(char_width('a'), Some(1))
-  assert_eq(char_width('Z'), Some(1))
+  assert_eq(@unicodewidth.char_width('a'), Some(1))
+  assert_eq(@unicodewidth.char_width('Z'), Some(1))
 
   // Fullwidth characters have width 2
-  assert_eq(char_width('ｈ'), Some(2)) // Fullwidth 'h'
+  assert_eq(@unicodewidth.char_width('ｈ'), Some(2)) // Fullwidth 'h'
 
   // Control characters return None
-  assert_eq(char_width('\u{0}'), None) // Null character
+  assert_eq(@unicodewidth.char_width('\u{0}'), None) // Null character
 
   // But str_width handles them as width 1
-  assert_eq(str_width("\u{0}"), 1)
+  assert_eq(@unicodewidth.str_width("\u{0}"), 1)
 }
 ```
 
@@ -73,13 +73,13 @@ test {
 ```mbt
 test {
   // Mixed-width strings
-  assert_eq(str_width("Hello"), 5)                    // ASCII only
-  assert_eq(str_width("ｈｅｌｌｏ"), 10)              // Fullwidth only
-  assert_eq(str_width("Hello世界"), 9)                 // Mixed ASCII + CJK (5 + 2 + 2)
+  assert_eq(@unicodewidth.str_width("Hello"), 5)                    // ASCII only
+  assert_eq(@unicodewidth.str_width("ｈｅｌｌｏ"), 10)              // Fullwidth only
+  assert_eq(@unicodewidth.str_width("Hello世界"), 9)                 // Mixed ASCII + CJK (5 + 2 + 2)
 
   // Emoji handling
-  assert_eq(str_width("👩"), 2)                       // Woman emoji
-  assert_eq(str_width("👩‍🔬"), 2)                     // Woman scientist (ZWJ sequence)
+  assert_eq(@unicodewidth.str_width("👩"), 2)                       // Woman emoji
+  assert_eq(@unicodewidth.str_width("👩‍🔬"), 2)                     // Woman scientist (ZWJ sequence)
 }
 ```
 
@@ -91,15 +91,15 @@ test {
   let ambiguous_char = '\u{B7}'  // Middle dot
 
   // In non-CJK context (cjk=false)
-  assert_eq(char_width(ambiguous_char, cjk=false), Some(1))
+  assert_eq(@unicodewidth.char_width(ambiguous_char, cjk=false), Some(1))
 
   // In CJK context (cjk=true) - treated as wide
-  assert_eq(char_width(ambiguous_char, cjk=true), Some(2))
+  assert_eq(@unicodewidth.char_width(ambiguous_char, cjk=true), Some(2))
 
   // This affects string width calculations
   let text = "Hello\u{B7}World"
-  assert_eq(str_width(text, cjk=false), 11)  // 5 + 1 + 5
-  assert_eq(str_width(text, cjk=true), 12)   // 5 + 2 + 5
+  assert_eq(@unicodewidth.str_width(text, cjk=false), 11)  // 5 + 1 + 5
+  assert_eq(@unicodewidth.str_width(text, cjk=true), 12)   // 5 + 2 + 5
 }
 ```
 
@@ -108,16 +108,16 @@ test {
 ```mbt
 test {
   // Regional indicator sequences (flag emojis)
-  assert_eq(str_width("🇺🇸"), 2) // US flag
+  assert_eq(@unicodewidth.str_width("🇺🇸"), 2) // US flag
 
   // Emoji with modifiers
-  assert_eq(str_width("👶🏽"), 2) // Baby with skin tone modifier
+  assert_eq(@unicodewidth.str_width("👶🏽"), 2) // Baby with skin tone modifier
 
   // Zero-width sequences
-  assert_eq(str_width("👨‍👩‍👧‍👦"), 2) // Family emoji (multiple ZWJ)
+  assert_eq(@unicodewidth.str_width("👨‍👩‍👧‍👦"), 2) // Family emoji (multiple ZWJ)
 
   // Combining marks
-  assert_eq(str_width("é"), 1) // 'e' + acute accent
+  assert_eq(@unicodewidth.str_width("é"), 1) // 'e' + acute accent
 }
 ```
 
@@ -127,7 +127,7 @@ test {
 test {
   // Text alignment in terminal
   fn align_text(text: String, width: Int, align: String) -> String {
-    let text_width = str_width(text)
+    let text_width = @unicodewidth.str_width(text)
     match align {
       "left" => text + " ".repeat(width - text_width)
       "right" => " ".repeat(width - text_width) + text
@@ -142,9 +142,9 @@ test {
 
   // Example usage
   let sample_text = "Hello世界"
-  assert_eq(str_width(sample_text), 9)  // 5 + 2 + 2
+  assert_eq(@unicodewidth.str_width(sample_text), 9)  // 5 + 2 + 2
   let centered = align_text(sample_text, 10, "center")
-  assert_eq(str_width(centered), 10)
+  assert_eq(@unicodewidth.str_width(centered), 10)
 }
 ```
 
@@ -158,7 +158,7 @@ test {
     let mut current_width = 0
 
     for c in text {
-      let char_w = char_width(c).unwrap_or(1)
+      let char_w = @unicodewidth.char_width(c).unwrap_or(1)
       if current_width + char_w <= max_width {
         result = result + c.to_string()
         current_width = current_width + char_w
@@ -173,7 +173,7 @@ test {
   // Example usage
   let long_text = "This is a very long text with emoji 🚀 and CJK 世界"
   let truncated = truncate_to_width(long_text, 20)
-  assert_eq(str_width(truncated), 20)
+  assert_eq(@unicodewidth.str_width(truncated), 20)
 }
 ```
 
