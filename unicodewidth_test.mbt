@@ -14,7 +14,10 @@ fn assert_str_width(
   loc~ : SourceLoc,
 ) -> Unit raise {
   assert_eq(
-    (str_width(s, cjk=false), str_width(s, cjk=true)),
+    (
+      @unicodewidth.str_width(s, cjk=false),
+      @unicodewidth.str_width(s, cjk=true),
+    ),
     (nocjk, cjk),
     loc~,
   )
@@ -29,7 +32,10 @@ fn assert_char_width(
   loc~ : SourceLoc,
 ) -> Unit raise {
   assert_eq(
-    (char_width(c, cjk=false), char_width(c, cjk=true)),
+    (
+      @unicodewidth.char_width(c, cjk=false),
+      @unicodewidth.char_width(c, cjk=true),
+    ),
     (nocjk, cjk),
     loc~,
   )
@@ -235,12 +241,12 @@ test "char_str_consistent" {
   for i in 0..=0x10FFFF {
     let c = i.unsafe_to_char()
     assert_eq(
-      char_width(c, cjk=false).unwrap_or(1),
-      str_width(c.to_string(), cjk=false),
+      @unicodewidth.char_width(c, cjk=false).unwrap_or(1),
+      @unicodewidth.str_width(c.to_string(), cjk=false),
     )
     assert_eq(
-      char_width(c, cjk=true).unwrap_or(1),
-      str_width(c.to_string(), cjk=true),
+      @unicodewidth.char_width(c, cjk=true).unwrap_or(1),
+      @unicodewidth.str_width(c.to_string(), cjk=true),
     )
   }
 }
@@ -409,8 +415,8 @@ test "test_khmer_coeng" {
     } else {
       assert_str_width(
         "\u{17D2}\{c}",
-        char_width(c, cjk=false).unwrap_or(1),
-        char_width(c, cjk=true).unwrap_or(1),
+        @unicodewidth.char_width(c, cjk=false).unwrap_or(1),
+        @unicodewidth.char_width(c, cjk=true).unwrap_or(1),
       )
     }
   }
@@ -540,12 +546,12 @@ test "test_vs1_vs2" {
     }
     for cjk in [false, true] {
       assert_eq(
-        str_width("\{c}\u{FE00}", cjk~),
-        char_width(c, cjk~).unwrap_or(1),
+        @unicodewidth.str_width("\{c}\u{FE00}", cjk~),
+        @unicodewidth.char_width(c, cjk~).unwrap_or(1),
       )
       assert_eq(
-        str_width("\{c}\u{FE01}", cjk~),
-        char_width(c, cjk~).unwrap_or(1),
+        @unicodewidth.str_width("\{c}\u{FE01}", cjk~),
+        @unicodewidth.char_width(c, cjk~).unwrap_or(1),
       )
     }
   }
