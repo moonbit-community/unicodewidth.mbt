@@ -52,6 +52,7 @@ A constant tuple representing the Unicode version this library supports.
 ### Basic Character Width
 
 ```mbt
+///|
 test {
   // ASCII characters have width 1
   assert_eq(@unicodewidth.char_width('a'), Some(1))
@@ -71,24 +72,26 @@ test {
 ### String Width Calculation
 
 ```mbt
+///|
 test {
   // Mixed-width strings
-  assert_eq(@unicodewidth.str_width("Hello"), 5)                    // ASCII only
-  assert_eq(@unicodewidth.str_width("ｈｅｌｌｏ"), 10)              // Fullwidth only
-  assert_eq(@unicodewidth.str_width("Hello世界"), 9)                 // Mixed ASCII + CJK (5 + 2 + 2)
+  assert_eq(@unicodewidth.str_width("Hello"), 5) // ASCII only
+  assert_eq(@unicodewidth.str_width("ｈｅｌｌｏ"), 10) // Fullwidth only
+  assert_eq(@unicodewidth.str_width("Hello世界"), 9) // Mixed ASCII + CJK (5 + 2 + 2)
 
   // Emoji handling
-  assert_eq(@unicodewidth.str_width("👩"), 2)                       // Woman emoji
-  assert_eq(@unicodewidth.str_width("👩‍🔬"), 2)                     // Woman scientist (ZWJ sequence)
+  assert_eq(@unicodewidth.str_width("👩"), 2) // Woman emoji
+  assert_eq(@unicodewidth.str_width("👩‍🔬"), 2) // Woman scientist (ZWJ sequence)
 }
 ```
 
 ### CJK vs Non-CJK Context
 
 ```mbt
+///|
 test {
   // Ambiguous width characters behave differently in CJK vs non-CJK contexts
-  let ambiguous_char = '\u{B7}'  // Middle dot
+  let ambiguous_char = '\u{B7}' // Middle dot
 
   // In non-CJK context (cjk=false)
   assert_eq(@unicodewidth.char_width(ambiguous_char, cjk=false), Some(1))
@@ -98,14 +101,15 @@ test {
 
   // This affects string width calculations
   let text = "Hello\u{B7}World"
-  assert_eq(@unicodewidth.str_width(text, cjk=false), 11)  // 5 + 1 + 5
-  assert_eq(@unicodewidth.str_width(text, cjk=true), 12)   // 5 + 2 + 5
+  assert_eq(@unicodewidth.str_width(text, cjk=false), 11) // 5 + 1 + 5
+  assert_eq(@unicodewidth.str_width(text, cjk=true), 12) // 5 + 2 + 5
 }
 ```
 
 ### Complex Unicode Sequences
 
 ```mbt
+///|
 test {
   // Regional indicator sequences (flag emojis)
   assert_eq(@unicodewidth.str_width("🇺🇸"), 2) // US flag
@@ -124,9 +128,10 @@ test {
 ### Practical Applications
 
 ```mbt
+///|
 test {
   // Text alignment in terminal
-  fn align_text(text: String, width: Int, align: String) -> String {
+  fn align_text(text : String, width : Int, align : String) -> String {
     let text_width = @unicodewidth.str_width(text)
     match align {
       "left" => text + " ".repeat(width - text_width)
@@ -142,7 +147,7 @@ test {
 
   // Example usage
   let sample_text = "Hello世界"
-  assert_eq(@unicodewidth.str_width(sample_text), 9)  // 5 + 2 + 2
+  assert_eq(@unicodewidth.str_width(sample_text), 9) // 5 + 2 + 2
   let centered = align_text(sample_text, 10, "center")
   assert_eq(@unicodewidth.str_width(centered), 10)
 }
@@ -151,12 +156,12 @@ test {
 ### Text Truncation Utility
 
 ```mbt
+///|
 test {
   // Truncate text to fit display width
-  fn truncate_to_width(text: String, max_width: Int) -> String {
+  fn truncate_to_width(text : String, max_width : Int) -> String {
     let mut result = ""
     let mut current_width = 0
-
     for c in text {
       let char_w = @unicodewidth.char_width(c).unwrap_or(1)
       if current_width + char_w <= max_width {
@@ -166,7 +171,6 @@ test {
         break
       }
     }
-
     result
   }
 

@@ -1,4 +1,3 @@
 {
-  "test": "moonbitlang/x",
-  "test-import": ["moonbitlang/x/fs"]
+  "test": "moonbitlang/x"
 }
