@@ -1,16 +1,12 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "rami3l/unicodewidth"
 
-import(
-  "moonbitlang/core/string"
-)
-
 // Values
-fn char_width(Char, cjk? : Bool) -> Int?
+pub fn char_width(Char, cjk? : Bool) -> Int?
 
-fn str_width(@string.View, cjk? : Bool) -> Int
+pub fn str_width(StringView, cjk? : Bool) -> Int
 
-let unicode_version : (Int, Int, Int)
+pub let unicode_version : (Int, Int, Int)
 
 // Errors
 
