@@ -500,29 +500,28 @@ test "test_kirat_rai_vowel_signs" {
   assert_str_width("\u{16D67}\u{16D67}", 2, 2)
 }
 
-// TODO: Fix regex pattern matching syntax
-// ///|
-// test "emoji_test_file" {
-//   let file = @fs.read_file_to_string("./emoji-test.txt")
-//   for line in file.split("\n") {
-//     let cps = match line using regex {
-//       [] => continue
-//       ["#", ..] => continue
-//       [".*" as cps, ";[ \t\n]*", "(fully-qualified|component).*", "[ \t\n]*"] =>
-//         cps
-//       _ => continue
-//     }
-//     let emoji = cps
-//       .trim(" \t\n")
-//       .split(" ")
-//       .map(s => (try? @strconv.parse_uint(s, base=16))
-//         .unwrap()
-//         .reinterpret_as_int()
-//         .unsafe_to_char())
-//       |> @string.from_iter
-//     assert_str_width(emoji, 2, 2)
-//   }
-// }
+///|
+test "emoji_test_file" {
+  let file = @fs.read_file_to_string("./emoji-test.txt")
+  for line in file.split("\n") {
+    let cps = lexmatch line {
+      "" => continue
+      ("#", _) => continue
+      ((".*" as cps) ";[ \t\n]*" "(fully-qualified|component).*" "[ \t\n]*") =>
+        cps
+      _ => continue
+    }
+    let emoji = cps
+      .trim(chars=" \t\n")
+      .split(" ")
+      .map(s => (try? @strconv.parse_uint(s, base=16))
+        .unwrap()
+        .reinterpret_as_int()
+        .unsafe_to_char())
+      |> String::from_iter
+    assert_str_width(emoji, 2, 2)
+  }
+}
 
 ///|
 test "ambiguous_line_break" {
