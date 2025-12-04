@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: install
-        if: ${{ matrix.os.name != 'windows-latest' }}
+        if: ${{ runner.os != 'Windows' }}
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s 'latest'
           echo "$HOME/.moon/bin" >> $GITHUB_PATH
@@ -29,7 +29,7 @@ jobs:
       - name: install on windows
         env:
           MOONBIT_INSTALL_VERSION: latest
-        if: ${{ matrix.os.name == 'windows-latest' }}
+        if: ${{ runner.os == 'Windows' }}
         run: |
           Set-ExecutionPolicy RemoteSigned -Scope CurrentUser; irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
           "C:\Users\runneradmin\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
@@ -60,14 +60,8 @@ jobs:
         env:
           OCAMLRUNPARAM: b
         run: |
-          moon test --target wasm
-          moon test --target wasm --release
-          # moon test --target wasm-gc
-          # moon test --target wasm-gc --release
-          moon test --target js
-          moon test --target js --release
-          # moon test --target native
-          # moon test --target native --release
+          moon test --target all
+          moon test --target all --release
 
   coverage-check:
     runs-on: ubuntu-latest
