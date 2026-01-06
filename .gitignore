@@ -8,3 +8,6 @@ scripts/tmp
 scripts/*.txt
 scripts/*.rs
 bench_data/*
+_build/
+target
+_build
