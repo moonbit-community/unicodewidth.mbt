@@ -10,3 +10,4 @@ scripts/*.rs
 bench_data/*
 _build/
 target
+_build
