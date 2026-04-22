@@ -1610,6 +1610,7 @@ priv struct WidthInfo(UInt16) derive(Eq)
 // Constants
 let default_width_info : WidthInfo = WidthInfo(0)
 let ligature_transparent_mask : UInt16 = 0b0010_0000_0000_0000
+let uint16_max_value : UInt16 = 0xffff
 """
         )
 
@@ -1655,8 +1656,8 @@ fn set_emoji_presentation(self : WidthInfo) -> WidthInfo {
     (self.0 & 0b1001_0000_0000_0000) == 0b0001_0000_0000_0000 {
     WidthInfo(
       (self.0 | variation_selector_16_width_info.0) &
-      (variation_selector_15_width_info.0 ^ @uint16.max_value) &
-      (variation_selector_1_or_2_width_info.0 ^ @uint16.max_value),
+      (variation_selector_15_width_info.0 ^ uint16_max_value) &
+      (variation_selector_1_or_2_width_info.0 ^ uint16_max_value),
     )
   } else {
     variation_selector_16_width_info
@@ -1666,7 +1667,7 @@ fn set_emoji_presentation(self : WidthInfo) -> WidthInfo {
 ///|
 fn unset_emoji_presentation(self : WidthInfo) -> WidthInfo {
   if (self.0 & ligature_transparent_mask) == ligature_transparent_mask {
-    WidthInfo(self.0 & (variation_selector_16_width_info.0 ^ @uint16.max_value))
+    WidthInfo(self.0 & (variation_selector_16_width_info.0 ^ uint16_max_value))
   } else {
     default_width_info
   }
@@ -1683,8 +1684,8 @@ fn set_text_presentation(self : WidthInfo) -> WidthInfo {
   if (self.0 & ligature_transparent_mask) == ligature_transparent_mask {
     WidthInfo(
       (self.0 | variation_selector_15_width_info.0) &
-      (variation_selector_16_width_info.0 ^ @uint16.max_value) &
-      (variation_selector_1_or_2_width_info.0 ^ @uint16.max_value),
+      (variation_selector_16_width_info.0 ^ uint16_max_value) &
+      (variation_selector_1_or_2_width_info.0 ^ uint16_max_value),
     )
   } else {
     variation_selector_15_width_info
@@ -1694,7 +1695,7 @@ fn set_text_presentation(self : WidthInfo) -> WidthInfo {
 ///|
 fn unset_text_presentation(self : WidthInfo) -> WidthInfo {
   if (self.0 & ligature_transparent_mask) == ligature_transparent_mask {
-    WidthInfo(self.0 & (variation_selector_15_width_info.0 ^ @uint16.max_value))
+    WidthInfo(self.0 & (variation_selector_15_width_info.0 ^ uint16_max_value))
   } else {
     default_width_info
   }
@@ -1711,8 +1712,8 @@ fn set_vs1_2(self : WidthInfo) -> WidthInfo {
   if (self.0 & ligature_transparent_mask) == ligature_transparent_mask {
     WidthInfo(
       (self.0 | variation_selector_1_or_2_width_info.0) &
-      (variation_selector_15_width_info.0 ^ @uint16.max_value) &
-      (variation_selector_16_width_info.0 ^ @uint16.max_value),
+      (variation_selector_15_width_info.0 ^ uint16_max_value) &
+      (variation_selector_16_width_info.0 ^ uint16_max_value),
     )
   } else {
     variation_selector_1_or_2_width_info
@@ -1723,7 +1724,7 @@ fn set_vs1_2(self : WidthInfo) -> WidthInfo {
 fn unset_vs1_2(self : WidthInfo) -> WidthInfo {
   if (self.0 & ligature_transparent_mask) == ligature_transparent_mask {
     WidthInfo(
-      self.0 & (variation_selector_1_or_2_width_info.0 ^ @uint16.max_value),
+      self.0 & (variation_selector_1_or_2_width_info.0 ^ uint16_max_value),
     )
   } else {
     default_width_info
