@@ -212,8 +212,6 @@ let khmer_coeng_eligible_letter_width_info : WidthInfo = WidthInfo(
 )
 
 ///|
-
-///|
 fn WidthInfo::is_ligature_transparent(self : WidthInfo) -> Bool {
   (self.0 & ligature_transparent_mask) == ligature_transparent_mask
 }
@@ -338,6 +336,7 @@ pub let unicode_version : (Int, Int, Int) = (16, 0, 0)
 /// `make_tables` function in `unicode.py`) you must ensure that this code reflects those changes.
 fn lookup_width(c : Char) -> (UInt, WidthInfo) {
   let cp = c.to_int()
+
   let t1_offset = width_root[cp >> 13]
 
   // Each sub-table in width_middle is 7 bits, and each stored entry is a byte,
@@ -354,6 +353,7 @@ fn lookup_width(c : Char) -> (UInt, WidthInfo) {
 
   // Extract the packed width
   let width = (packed_widths >> (2 * (cp & 0b11))) & 0b11
+
   if width < 3 {
     (width, default_width_info)
   } else {
@@ -690,6 +690,7 @@ fn width_in_str(c : Char, next_info : WidthInfo) -> (Int, WidthInfo) {
         return (0, default_width_info)
       }
     }
+
     let ret = lookup_width(c)
     (ret.0.reinterpret_as_int(), ret.1)
   }
@@ -725,6 +726,7 @@ fn str_width_impl(s : StringView) -> Int {
 // CJK variant
 fn lookup_width_cjk(c : Char) -> (UInt, WidthInfo) {
   let cp = c.to_int()
+
   let t1_offset = width_root_cjk[cp >> 13]
 
   // Each sub-table in width_middle is 7 bits, and each stored entry is a byte,
@@ -741,6 +743,7 @@ fn lookup_width_cjk(c : Char) -> (UInt, WidthInfo) {
 
   // Extract the packed width
   let width = (packed_widths >> (2 * (cp & 0b11))) & 0b11
+
   if width < 3 {
     (width, default_width_info)
   } else {
@@ -1091,6 +1094,7 @@ fn width_in_str_cjk(c : Char, next_info : WidthInfo) -> (Int, WidthInfo) {
         return (0, default_width_info)
       }
     }
+
     let ret = lookup_width_cjk(c)
     (ret.0.reinterpret_as_int(), ret.1)
   }
@@ -1242,6 +1246,7 @@ fn starts_non_ideographic_text_presentation_seq(c : Char) -> Bool {
     0x1F6 => 9
     _ => return false
   }
+
   let bottom_bits = cp & 0xFF
   // Binary search in the specific leaf array
   let ranges = match leaf_idx {
@@ -1290,6 +1295,7 @@ fn is_emoji_modifier_base(c : Char) -> Bool {
     0x1FA => 7
     _ => return false
   }
+
   let bottom_bits = cp & 0xFF
   // Binary search in the specific leaf array
   let ranges = match leaf_idx {
@@ -24450,6 +24456,7 @@ test "normalization_specific_cases" {
   // Test that we have some expected normalization test cases
   let mut found_decomposition = false
   let mut found_composition = false
+
   let test_count = if normalization_test_data.length() < 100 {
     normalization_test_data.length()
   } else {
@@ -24468,6 +24475,7 @@ test "normalization_specific_cases" {
       found_composition = true
     }
   }
+
   inspect(found_decomposition, content="true")
   inspect(found_composition, content="true")
 }
