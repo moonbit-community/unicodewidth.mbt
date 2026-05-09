@@ -504,7 +504,7 @@ test "test_kirat_rai_vowel_signs" {
 test "emoji_test_file" {
   let file = @fs.read_file_to_string("./emoji-test.txt")
   for line in file.split("\n") {
-    let cps = lexmatch line {
+    let cps = lexmatch line with longest {
       "" => continue
       ("#", _) => continue
       ((".*" as cps) ";[ \t\n]*" "(fully-qualified|component).*" "[ \t\n]*") =>
