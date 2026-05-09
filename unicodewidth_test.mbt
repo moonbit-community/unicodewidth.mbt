@@ -31,7 +31,7 @@ fn assert_char_width(
   cjk : Int?,
   loc~ : SourceLoc,
 ) -> Unit raise {
-  assert_eq(
+  @debug.assert_eq(
     (
       @unicodewidth.char_width(c, cjk=false),
       @unicodewidth.char_width(c, cjk=true),
