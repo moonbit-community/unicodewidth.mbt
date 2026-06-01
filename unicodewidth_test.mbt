@@ -315,6 +315,8 @@ test "test_arabic_lam_alef" {
   assert_str_width("\u{6B8}\u{FE0E}\u{627}", 1, 1)
   assert_str_width("\u{6B8}\u{FE0F}\u{627}", 1, 1)
   assert_str_width("\u{6B8}\u{17B5}\u{627}", 1, 1)
+  assert_str_width("\u{644}\u{605}\u{623}", 2, 2)
+  assert_str_width("\u{6B8}\u{605}\u{627}", 2, 2)
   assert_str_width("\u{644}\u{644}\u{623}", 2, 2)
   assert_str_width("\u{644}\u{644}\u{627}", 2, 2)
   assert_str_width("\u{6B8}\u{6B8}\u{623}", 2, 2)
