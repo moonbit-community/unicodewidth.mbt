@@ -1,0 +1,19 @@
+name = "rami3l/unicodewidth"
+
+version = "0.2.0"
+
+import {
+  "moonbitlang/x@0.4.43",
+}
+
+readme = "README.md"
+
+repository = "https://github.com/moonbit-community/unicodewidth.mbt"
+
+license = "Apache-2.0"
+
+keywords = [ "unicode", "text" ]
+
+description = "A simple library for measuring the width of unicode characters and strings."
+
+preferred_target = "js"
