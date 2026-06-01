@@ -1768,10 +1768,10 @@ fn is_transparent_zero_width(c : Char) -> Bool {
             } else if cp > end {
                 low = mid + 1
             } else {
-                return true
+                return false
             }
         }
-        false
+        true
     }
 }
 
