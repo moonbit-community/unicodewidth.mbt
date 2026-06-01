@@ -234,6 +234,7 @@ test "test_control_line_break" {
   assert_str_width("1\t2\r\n3\u{85}4", 7, 7)
   assert_str_width("\r\u{FE0F}\n", 2, 2)
   assert_str_width("\r\u{200D}\n", 2, 2)
+  assert_str_width("\n\u{200D}🕊️", 3, 3)
 }
 
 ///|
@@ -286,6 +287,12 @@ test "test_hebrew_alef_lamed" {
   assert_str_width("\u{5DC}", 1, 1)
   assert_str_width("\u{5D0}\u{5DC}", 2, 2)
   assert_str_width("\u{5D0}\u{200D}\u{5DC}", 1, 1)
+  assert_str_width("\u{5D0}\u{34F}\u{200D}\u{5DC}", 1, 1)
+  assert_str_width("\u{5D0}\u{180B}\u{200D}\u{5DC}", 1, 1)
+  assert_str_width("\u{5D0}\u{180F}\u{200D}\u{5DC}", 1, 1)
+  assert_str_width("\u{5D0}\u{E0100}\u{200D}\u{5DC}", 1, 1)
+  assert_str_width("\u{5D0}\u{FE00}\u{34F}\u{200D}\u{5DC}", 1, 1)
+  assert_str_width("\u{5D0}\u{FE01}\u{34F}\u{200D}\u{5DC}", 1, 1)
   assert_str_width(
     "\u{5D0}\u{200D}\u{200D}\u{200D}\u{200D}\u{200D}\u{200D}\u{200D}\u{5DC}", 1,
     1,
@@ -491,6 +498,10 @@ test "test_emoji_zwj" {
   assert_str_width(
     "🏴\u{E0031}\u{E0031}\u{E0031}\u{E0063}\u{E007F}\u{200D}Ⓜ️", 2, 2,
   )
+  assert_str_width(
+    "🏴\u{E0061}\u{E0061}\u{E0061}\u{E0061}\u{E0061}\u{E0061}\u{E007F}\u{200D}Ⓜ️",
+    2, 2,
+  )
 }
 
 ///|
@@ -499,6 +510,10 @@ test "test_kirat_rai_vowel_signs" {
   assert_str_width("\u{16D68}", 1, 1)
   assert_str_width("\u{16D69}", 1, 1)
   assert_str_width("\u{16D63}", 1, 1)
+  assert_str_width("\u{16D63}\u{16D67}", 1, 1)
+  assert_str_width("\u{16D68}\u{16D67}", 2, 2)
+  assert_str_width("\u{16D69}\u{16D67}", 1, 1)
+  assert_str_width("\u{16D63}\u{16D68}", 1, 1)
   assert_str_width("\u{16D67}\u{16D67}", 2, 2)
 }
 
