@@ -3,6 +3,7 @@ name = "moonbit-community/unicodewidth"
 version = "0.2.1"
 
 import {
+  "kawaz/grapheme@0.10.2",
   "moonbitlang/x@0.4.44",
 }
 

@@ -42,6 +42,73 @@ fn assert_char_width(
 }
 
 ///|
+fn display_unit_summary(line : @unicodewidth.DisplayLine) -> String {
+  let parts : Array[String] = []
+  for unit in line.units() {
+    parts.push(
+      "\{unit.text()}:w\{unit.width()}:c\{unit.display_start().column()}-\{unit.display_end().column()}",
+    )
+  }
+  parts.join("|")
+}
+
+///|
+test "display line exposes display units" {
+  let line = @unicodewidth.display_line("a你好b")
+  inspect(line.width(), content="6")
+  inspect(
+    display_unit_summary(line),
+    content="a:w1:c0-1|你:w2:c1-3|好:w2:c3-5|b:w1:c5-6",
+  )
+}
+
+///|
+test "display line maps textual and display positions" {
+  let line = @unicodewidth.display_line("a你好b")
+  let after_a = line.next(line.start()).unwrap()
+  let after_ni = line.next(after_a).unwrap()
+  let after_hao = line.next(after_ni).unwrap()
+  inspect(line.slice(after_a, after_hao), content="你好")
+  inspect(line.display_position(after_ni).column(), content="3")
+  let inside_ni = @unicodewidth.DisplayPosition::new(column=2)
+  inspect(
+    line.slice(line.start(), line.textual_position_at_or_before(inside_ni)),
+    content="a",
+  )
+  inspect(
+    line.slice(line.start(), line.textual_position_at_or_after(inside_ni)),
+    content="a你",
+  )
+}
+
+///|
+test "display line keeps emoji zwj as one unit" {
+  let line = @unicodewidth.display_line("x👨‍👩‍👧‍👦y")
+  inspect(line.width(), content="4")
+  inspect(
+    display_unit_summary(line),
+    content="x:w1:c0-1|👨‍👩‍👧‍👦:w2:c1-3|y:w1:c3-4",
+  )
+}
+
+///|
+test "display line merges non additive grapheme runs" {
+  let line = @unicodewidth.display_line("\u{644}\u{627}")
+  inspect(line.width(), content="1")
+  inspect(display_unit_summary(line), content="لا:w1:c0-1")
+  assert_true(line.next(line.start()).unwrap() == line.end())
+}
+
+///|
+test "display line truncates by display units" {
+  let line = @unicodewidth.display_line("a你好b")
+  inspect(line.truncate(4), content="a你…")
+  inspect(line.truncate(1), content="…")
+  inspect(line.truncate(0), content="")
+  inspect(line.truncate(4, suffix=""), content="a你")
+}
+
+///|
 test "test_str" {
   assert_str_width("ｈｅｌｌｏ", 10, 10)
   assert_str_width("\u{0}\u{0}\u{0}\u{1}\u{1}", 5, 5)

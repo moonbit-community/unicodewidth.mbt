@@ -1,4 +1,8 @@
 import {
+  "kawaz/grapheme",
+}
+
+import {
   "moonbitlang/core/debug",
   "moonbitlang/core/string",
   "moonbitlang/x/fs",
