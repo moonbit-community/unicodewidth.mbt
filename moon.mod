@@ -1,4 +1,4 @@
-name = "rami3l/unicodewidth"
+name = "moonbit-community/unicodewidth"
 
 version = "0.2.0"
 
@@ -15,5 +15,3 @@ license = "Apache-2.0"
 keywords = [ "unicode", "text" ]
 
 description = "A simple library for measuring the width of unicode characters and strings."
-
-preferred_target = "js"
