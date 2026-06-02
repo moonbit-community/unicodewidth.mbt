@@ -33,8 +33,13 @@ jobs:
           tag="${GITHUB_REF_NAME#v}"
           test "$tag" = "$version"
 
-      - name: Check
-        run: moon check --target native
+      - name: Check all targets
+        run: moon check --target all
+
+      - name: Test all targets
+        run: |
+          moon test --target all
+          moon test --target all --release
 
       - name: Publish
         run: |
