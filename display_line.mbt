@@ -18,7 +18,7 @@ struct DisplayPosition(Int) derive(Eq)
 ///|
 /// Build a single-line display position. Negative columns are clamped to zero.
 pub fn DisplayPosition::new(column~ : Int) -> DisplayPosition {
-  DisplayPosition(if column < 0 { 0 } else { column })
+  DisplayPosition(column.max(0))
 }
 
 ///|
@@ -101,11 +101,6 @@ fn make_display_unit(
 }
 
 ///|
-fn unit_slice(source : String, start : Int, end : Int) -> StringView {
-  source.view(start_offset=start, end_offset=end)
-}
-
-///|
 fn flush_pending_unit(
   units : Array[DisplayUnit],
   source : String,
@@ -116,7 +111,7 @@ fn flush_pending_unit(
 ) -> Int {
   units.push(
     make_display_unit(
-      unit_slice(source, start, end),
+      source.view(start_offset=start, end_offset=end),
       width,
       units.length(),
       display_column,
@@ -157,7 +152,7 @@ fn display_units_for(source : String, cjk : Bool) -> Array[DisplayUnit] {
     } else {
       let next_end = grapheme.start_offset() + grapheme.length()
       let combined_width = str_width(
-        unit_slice(source, pending_start, next_end),
+        source.view(start_offset=pending_start, end_offset=next_end),
         cjk~,
       )
       if combined_width == pending_width + grapheme_width {
