@@ -47,7 +47,7 @@ Returns the UAX #11 based width of a string.
 
 Parses a single logical line into terminal display units and legal textual
 positions. This is the TUI-oriented API for cursor movement, hit testing,
-slicing, and truncation.
+zero-copy viewing, and truncation.
 
 - **Parameters:**
   - `s`: The single-line string to lay out
@@ -154,11 +154,15 @@ test {
   // Convert a display column inside a wide character back to text boundaries
   let middle = @unicodewidth.DisplayPosition::new(column=2)
   assert_eq(
-    line.slice(line.start(), line.textual_position_at_or_before(middle)),
+    line
+    .view(line.start(), line.textual_position_at_or_before(middle))
+    .to_owned(),
     "a",
   )
   assert_eq(
-    line.slice(line.start(), line.textual_position_at_or_after(middle)),
+    line
+    .view(line.start(), line.textual_position_at_or_after(middle))
+    .to_owned(),
     "a你",
   )
 

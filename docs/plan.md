@@ -10,7 +10,8 @@ iteration and `str_width`.
 
 Expose a single-line `DisplayLine` model built from text and the existing width
 rules. It provides display units, legal textual positions, display-column
-positions, conversion between those coordinate systems, slicing, and truncation.
+positions, conversion between those coordinate systems, zero-copy viewing, and
+truncation.
 
 The API deliberately avoids the word cursor because terminal cursor coordinates
 and textual insertion boundaries are different concepts.
@@ -22,7 +23,7 @@ and textual insertion boundaries are different concepts.
 - `moon.pkg`: import the grapheme package for the root package.
 - `display_line.mbt`: implementation of the new API.
 - `unicodewidth_test.mbt`: focused tests for display units, position mapping,
-  slicing, and truncation.
+  viewing, and truncation.
 - `README.mbt.md`: document the TUI-oriented API.
 - `pkg.generated.mbti`: generated interface update from `moon info`.
 
@@ -44,7 +45,7 @@ Expected additions:
 - `DisplayLine::display_position(Self, TextualPosition) -> DisplayPosition`
 - `DisplayLine::textual_position_at_or_before(Self, DisplayPosition) -> TextualPosition`
 - `DisplayLine::textual_position_at_or_after(Self, DisplayPosition) -> TextualPosition`
-- `DisplayLine::slice(Self, TextualPosition, TextualPosition) -> String`
+- `DisplayLine::view(Self, TextualPosition, TextualPosition) -> StringView`
 - `DisplayLine::truncate(Self, Int, suffix? : StringView) -> String`
 - `DisplayUnit::text(Self) -> StringView`
 - `DisplayUnit::width(Self) -> Int`

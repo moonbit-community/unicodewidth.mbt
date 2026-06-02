@@ -310,23 +310,26 @@ pub fn DisplayLine::textual_position_at_or_after(
 }
 
 ///|
-/// Text between two legal textual boundaries.
-pub fn DisplayLine::slice(
+/// View between two legal textual boundaries.
+pub fn DisplayLine::view(
   self : DisplayLine,
   start : TextualPosition,
   end : TextualPosition,
-) -> String {
+) -> StringView {
   let start = self.position_index(start)
   let end = self.position_index(end)
-  if end <= start {
-    ""
+  let start_offset = if start >= self.units.length() {
+    self.text.length()
   } else {
-    let builder = StringBuilder()
-    for index in start..<end {
-      builder.write_stringview(self.units[index].text())
-    }
-    builder.to_string()
+    self.units[start].text().start_offset()
   }
+  let end_offset = if end <= start {
+    start_offset
+  } else {
+    let end_text = self.units[end - 1].text()
+    end_text.start_offset() + end_text.length()
+  }
+  self.text.view(start_offset~, end_offset~)
 }
 
 ///|

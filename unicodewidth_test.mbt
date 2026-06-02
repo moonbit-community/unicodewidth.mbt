@@ -67,11 +67,11 @@ test "display line exposes unit textual boundaries" {
   let line = @unicodewidth.display_line("a你好b")
   let units = line.units()
   inspect(
-    line.slice(units[0].textual_start(), units[0].textual_end()),
+    line.view(units[0].textual_start(), units[0].textual_end()),
     content="a",
   )
   inspect(
-    line.slice(units[1].textual_start(), units[1].textual_end()),
+    line.view(units[1].textual_start(), units[1].textual_end()),
     content="你",
   )
 }
@@ -82,15 +82,15 @@ test "display line maps textual and display positions" {
   let after_a = line.next(line.start()).unwrap()
   let after_ni = line.next(after_a).unwrap()
   let after_hao = line.next(after_ni).unwrap()
-  inspect(line.slice(after_a, after_hao), content="你好")
+  inspect(line.view(after_a, after_hao), content="你好")
   inspect(line.display_position(after_ni).column(), content="3")
   let inside_ni = @unicodewidth.DisplayPosition::new(column=2)
   inspect(
-    line.slice(line.start(), line.textual_position_at_or_before(inside_ni)),
+    line.view(line.start(), line.textual_position_at_or_before(inside_ni)),
     content="a",
   )
   inspect(
-    line.slice(line.start(), line.textual_position_at_or_after(inside_ni)),
+    line.view(line.start(), line.textual_position_at_or_after(inside_ni)),
     content="a你",
   )
 }
@@ -104,7 +104,7 @@ test "display line handles boundary positions" {
   inspect(line.next(end) is None, content="true")
   inspect(line.prev(start) is None, content="true")
   let before_end = line.prev(end).unwrap()
-  inspect(line.slice(before_end, end), content="b")
+  inspect(line.view(before_end, end), content="b")
   inspect(
     line.textual_position_at_or_after(
       @unicodewidth.DisplayPosition::new(column=0),
@@ -119,7 +119,7 @@ test "display line handles boundary positions" {
     end,
     content="true",
   )
-  inspect(line.slice(end, start), content="")
+  inspect(line.view(end, start), content="")
 }
 
 ///|

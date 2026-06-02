@@ -18,12 +18,12 @@ pub fn DisplayLine::display_position(Self, TextualPosition) -> DisplayPosition
 pub fn DisplayLine::end(Self) -> TextualPosition
 pub fn DisplayLine::next(Self, TextualPosition) -> TextualPosition?
 pub fn DisplayLine::prev(Self, TextualPosition) -> TextualPosition?
-pub fn DisplayLine::slice(Self, TextualPosition, TextualPosition) -> String
 pub fn DisplayLine::start(Self) -> TextualPosition
 pub fn DisplayLine::textual_position_at_or_after(Self, DisplayPosition) -> TextualPosition
 pub fn DisplayLine::textual_position_at_or_before(Self, DisplayPosition) -> TextualPosition
 pub fn DisplayLine::truncate(Self, Int, suffix? : StringView) -> String
 pub fn DisplayLine::units(Self) -> Array[DisplayUnit]
+pub fn DisplayLine::view(Self, TextualPosition, TextualPosition) -> StringView
 pub fn DisplayLine::width(Self) -> Int
 
 type DisplayPosition derive(Eq)
