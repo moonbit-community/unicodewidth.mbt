@@ -63,6 +63,20 @@ test "display line exposes display units" {
 }
 
 ///|
+test "display line exposes unit textual boundaries" {
+  let line = @unicodewidth.display_line("a你好b")
+  let units = line.units()
+  inspect(
+    line.slice(units[0].textual_start(), units[0].textual_end()),
+    content="a",
+  )
+  inspect(
+    line.slice(units[1].textual_start(), units[1].textual_end()),
+    content="你",
+  )
+}
+
+///|
 test "display line maps textual and display positions" {
   let line = @unicodewidth.display_line("a你好b")
   let after_a = line.next(line.start()).unwrap()
@@ -79,6 +93,33 @@ test "display line maps textual and display positions" {
     line.slice(line.start(), line.textual_position_at_or_after(inside_ni)),
     content="a你",
   )
+}
+
+///|
+test "display line handles boundary positions" {
+  let line = @unicodewidth.display_line("a你好b")
+  let start = line.start()
+  let end = line.end()
+  inspect(line.display_position(start).column(), content="0")
+  inspect(line.next(end) is None, content="true")
+  inspect(line.prev(start) is None, content="true")
+  let before_end = line.prev(end).unwrap()
+  inspect(line.slice(before_end, end), content="b")
+  inspect(
+    line.textual_position_at_or_after(
+      @unicodewidth.DisplayPosition::new(column=0),
+    ) ==
+    start,
+    content="true",
+  )
+  inspect(
+    line.textual_position_at_or_after(
+      @unicodewidth.DisplayPosition::new(column=99),
+    ) ==
+    end,
+    content="true",
+  )
+  inspect(line.slice(end, start), content="")
 }
 
 ///|
@@ -105,7 +146,10 @@ test "display line truncates by display units" {
   inspect(line.truncate(4), content="a你…")
   inspect(line.truncate(1), content="…")
   inspect(line.truncate(0), content="")
+  inspect(line.truncate(-1), content="")
+  inspect(line.truncate(6), content="a你好b")
   inspect(line.truncate(4, suffix=""), content="a你")
+  inspect(line.truncate(1, suffix="你好"), content="")
 }
 
 ///|
