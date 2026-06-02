@@ -153,33 +153,10 @@ test {
 }
 ```
 
-### Text Truncation Utility
-
-```mbt nocheck
-///|
-test {
-  // Truncate text to fit display width
-  fn truncate_to_width(text : String, max_width : Int) -> String {
-    let mut result = ""
-    let mut current_width = 0
-    for c in text {
-      let char_w = @unicodewidth.char_width(c).unwrap_or(1)
-      if current_width + char_w <= max_width {
-        result = result + c.to_string()
-        current_width = current_width + char_w
-      } else {
-        break
-      }
-    }
-    result
-  }
-
-  // Example usage
-  let long_text = "This is a very long text with emoji 🚀 and CJK 世界"
-  let truncated = truncate_to_width(long_text, 20)
-  assert_eq(@unicodewidth.str_width(truncated), 20)
-}
-```
+For text truncation, split the input into grapheme clusters first, for example
+with [`kawaz/grapheme`](https://mooncakes.io/docs/kawaz/grapheme), then use
+`str_width` to measure display width without cutting through a user-perceived
+character.
 
 ## Character Width Categories
 
