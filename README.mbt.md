@@ -43,6 +43,17 @@ Returns the UAX #11 based width of a string.
   - `cjk`: If `true`, ambiguous width characters are treated as wide (CJK context). If `false`, they are treated as narrow. Defaults to `false`.
 - **Returns:** The total width of the string
 
+#### `display_line(s : @string.View, cjk? : Bool = false) -> DisplayLine`
+
+Parses a single logical line into terminal display units and legal textual
+positions. This is the TUI-oriented API for cursor movement, hit testing,
+slicing, and truncation.
+
+- **Parameters:**
+  - `s`: The single-line string to lay out
+  - `cjk`: If `true`, ambiguous width characters are treated as wide (CJK context). If `false`, they are treated as narrow. Defaults to `false`.
+- **Returns:** A `DisplayLine` that maps between textual positions and display columns
+
 #### `unicode_version: (Int, Int, Int)`
 
 A constant tuple representing the Unicode version this library supports.
@@ -125,6 +136,37 @@ test {
 }
 ```
 
+### Terminal Line Layout
+
+```mbt nocheck
+///|
+test {
+  let line = @unicodewidth.display_line("a你好b")
+
+  // Whole-line display width
+  assert_eq(line.width(), 6)
+
+  // Move by legal textual positions, not UTF-16 code units
+  let after_a = line.next(line.start()).unwrap()
+  let after_ni = line.next(after_a).unwrap()
+  assert_eq(line.display_position(after_ni).column(), 3)
+
+  // Convert a display column inside a wide character back to text boundaries
+  let middle = @unicodewidth.DisplayPosition::new(column=2)
+  assert_eq(
+    line.slice(line.start(), line.textual_position_at_or_before(middle)),
+    "a",
+  )
+  assert_eq(
+    line.slice(line.start(), line.textual_position_at_or_after(middle)),
+    "a你",
+  )
+
+  // Truncate without cutting through a display unit
+  assert_eq(line.truncate(4), "a你…")
+}
+```
+
 ### Practical Applications
 
 ```mbt nocheck
@@ -154,9 +196,13 @@ test {
 ```
 
 For text truncation, split the input into grapheme clusters first, for example
-with [`kawaz/grapheme`](https://mooncakes.io/docs/kawaz/grapheme), then use
-`str_width` to measure display width without cutting through a user-perceived
-character.
+with [`display_line`](#terminal-line-layout), then use its display units or
+`truncate` method to avoid cutting through a user-perceived character or a
+non-additive display sequence.
+
+`str_width` remains the right API when you only need the final width of a whole
+string. TUI editors should use `display_line` when they also need to map between
+text positions and terminal columns.
 
 ## Character Width Categories
 
