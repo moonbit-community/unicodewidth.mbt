@@ -1,4 +1,4 @@
-name = "rami3l/unicodewidth"
+name = "moonbit-community/unicodewidth"
 
 version = "0.2.0"
 

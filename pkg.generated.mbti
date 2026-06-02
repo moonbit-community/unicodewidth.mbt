@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "rami3l/unicodewidth"
+package "moonbit-community/unicodewidth"
 
 // Values
 pub fn char_width(Char, cjk? : Bool) -> Int?

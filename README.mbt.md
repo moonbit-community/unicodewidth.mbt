@@ -18,7 +18,7 @@ This library provides functions to determine the display width of Unicode charac
 Add this package to your `moon.pkg.json`:
 
 ```console
-> moon add rami3l/unicodewidth
+> moon add moonbit-community/unicodewidth
 ```
 
 ## API Reference
