@@ -337,27 +337,20 @@ pub fn DisplayLine::truncate(
   width : Int,
   suffix? : StringView = "…",
 ) -> String {
-  if width <= 0 {
-    ""
-  } else if self.width <= width {
-    self.text
-  } else {
-    let suffix_width = str_width(suffix, cjk=self.cjk)
-    if suffix_width > width {
-      ""
-    } else {
-      let content_width = width - suffix_width
-      let builder = StringBuilder()
-      let mut used = 0
-      for unit in self.units {
-        if used + unit.width() > content_width {
-          break
-        }
-        builder.write_stringview(unit.text())
-        used += unit.width()
-      }
-      builder.write_stringview(suffix)
-      builder.to_string()
+  guard width > 0 else { return "" }
+  guard self.width > width else { return self.text }
+  let suffix_width = str_width(suffix, cjk=self.cjk)
+  guard suffix_width <= width else { return "" }
+  let content_width = width - suffix_width
+  let builder = StringBuilder()
+  let mut used = 0
+  for unit in self.units {
+    if used + unit.width() > content_width {
+      break
     }
+    builder.write_stringview(unit.text())
+    used += unit.width()
   }
+  builder.write_stringview(suffix)
+  builder.to_string()
 }
