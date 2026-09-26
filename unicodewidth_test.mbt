@@ -522,10 +522,12 @@ test "emoji_test_file" {
   let file = @fs.read_file_to_string("./emoji-test.txt")
   for line in file.split("\n") {
     let cps = lexmatch line with longest {
-      "" => continue
-      ("#", _) => continue
-      ((".*" as cps) ";[ \t\n]*" "(fully-qualified|component).*" "[ \t\n]*") =>
-        cps
+      re"^$" => continue
+      (re"^#", after=_) => continue
+      (re"^.*" as cps) +
+      re";[ \t\n]*" +
+      re"(fully-qualified|component).*" +
+      re"[ \t\n]*$" => cps
       _ => continue
     }
     let emoji = cps
