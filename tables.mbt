@@ -3050,8 +3050,8 @@ let emoji_modifier_leaf_7 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-/// Test data for normalization tests
-let normalization_test_data : ReadOnlyArray[
+/// Test data for normalization tests (chunk 0)
+let normalization_test_data_0 : ReadOnlyArray[
   (String, String, String, String, String),
 ] = [
   ("Ḋ", "Ḋ", "Ḋ", "Ḋ", "Ḋ"),
@@ -8062,6 +8062,13 @@ let normalization_test_data : ReadOnlyArray[
   ("똫", "똫", "똫", "똫", "똫"),
   ("똬", "똬", "똬", "똬", "똬"),
   ("똭", "똭", "똭", "똭", "똭"),
+]
+
+///|
+/// Test data for normalization tests (chunk 1)
+let normalization_test_data_1 : ReadOnlyArray[
+  (String, String, String, String, String),
+] = [
   ("똮", "똮", "똮", "똮", "똮"),
   ("똯", "똯", "똯", "똯", "똯"),
   ("똰", "똰", "똰", "똰", "똰"),
@@ -13062,6 +13069,13 @@ let normalization_test_data : ReadOnlyArray[
   ("즳", "즳", "즳", "즳", "즳"),
   ("즴", "즴", "즴", "즴", "즴"),
   ("즵", "즵", "즵", "즵", "즵"),
+]
+
+///|
+/// Test data for normalization tests (chunk 2)
+let normalization_test_data_2 : ReadOnlyArray[
+  (String, String, String, String, String),
+] = [
   ("즶", "즶", "즶", "즶", "즶"),
   ("즷", "즷", "즷", "즷", "즷"),
   ("즸", "즸", "즸", "즸", "즸"),
@@ -18064,6 +18078,13 @@ let normalization_test_data : ReadOnlyArray[
   ("ｶ", "ｶ", "ｶ", "カ", "カ"),
   ("ｷ", "ｷ", "ｷ", "キ", "キ"),
   ("ｸ", "ｸ", "ｸ", "ク", "ク"),
+]
+
+///|
+/// Test data for normalization tests (chunk 3)
+let normalization_test_data_3 : ReadOnlyArray[
+  (String, String, String, String, String),
+] = [
   ("ｹ", "ｹ", "ｹ", "ケ", "ケ"),
   ("ｺ", "ｺ", "ｺ", "コ", "コ"),
   ("ｻ", "ｻ", "ｻ", "サ", "サ"),
@@ -24430,6 +24451,17 @@ let normalization_test_data : ReadOnlyArray[
     "𖵪𖵨", "𖵪𖵨", "𖵪𖵨", "𖵪𖵨", "𖵪𖵨",
   ),
 ]
+
+///|
+/// Test data for normalization tests
+let normalization_test_data : ReadOnlyArray[
+  (String, String, String, String, String),
+] = ReadOnlyArray::from_array(
+  [
+    ..normalization_test_data_0, ..normalization_test_data_1, ..normalization_test_data_2,
+    ..normalization_test_data_3,
+  ],
+)
 
 ///|
 /// Test that normalization test data is accessible and well-formed
