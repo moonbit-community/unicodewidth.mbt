@@ -2074,24 +2074,43 @@ let emoji_modifier_leaf_{leaf_idx} : ReadOnlyArray[(UInt, UInt)] = [
                 if not variant.is_non_cjk_only():
                     test_width_variants_cjk.append(variant)
 
-        # Generate normalization test data for MoonBit tests
-        module.write(
-            """
-///| Test data for normalization tests
-let normalization_test_data : ReadOnlyArray[(String, String, String, String, String)] = [\n"""
-        )
-        for orig, nfc, nfd, nfkc, nfkd in normalization_tests:
-            # Escape quotes and backslashes for MoonBit strings
-            orig_escaped = orig.replace("\\", "\\\\").replace('"', '\\"')
-            nfc_escaped = nfc.replace("\\", "\\\\").replace('"', '\\"')
-            nfd_escaped = nfd.replace("\\", "\\\\").replace('"', '\\"')
-            nfkc_escaped = nfkc.replace("\\", "\\\\").replace('"', '\\"')
-            nfkd_escaped = nfkd.replace("\\", "\\\\").replace('"', '\\"')
+        # Generate normalization test data for MoonBit tests.
+        # The data is split into several top-level chunks because a single
+        # top-level definition must stay below the compiler's text segment
+        # line limit (otherwise `text_segment_excceed` is reported).
+        NORMALIZATION_CHUNK_SIZE = 5000
+        normalization_chunks = [
+            normalization_tests[i : i + NORMALIZATION_CHUNK_SIZE]
+            for i in range(0, len(normalization_tests), NORMALIZATION_CHUNK_SIZE)
+        ]
+        for chunk_idx, chunk in enumerate(normalization_chunks):
             module.write(
-                f'    ("{orig_escaped}", "{nfc_escaped}", "{nfd_escaped}", "{nfkc_escaped}", "{nfkd_escaped}"),\n'
+                f"""
+///| Test data for normalization tests (chunk {chunk_idx})
+let normalization_test_data_{chunk_idx} : ReadOnlyArray[(String, String, String, String, String)] = [\n"""
             )
+            for orig, nfc, nfd, nfkc, nfkd in chunk:
+                # Escape quotes and backslashes for MoonBit strings
+                orig_escaped = orig.replace("\\", "\\\\").replace('"', '\\"')
+                nfc_escaped = nfc.replace("\\", "\\\\").replace('"', '\\"')
+                nfd_escaped = nfd.replace("\\", "\\\\").replace('"', '\\"')
+                nfkc_escaped = nfkc.replace("\\", "\\\\").replace('"', '\\"')
+                nfkd_escaped = nfkd.replace("\\", "\\\\").replace('"', '\\"')
+                module.write(
+                    f'    ("{orig_escaped}", "{nfc_escaped}", "{nfd_escaped}", "{nfkc_escaped}", "{nfkd_escaped}"),\n'
+                )
+            module.write("]\n")
 
-        module.write("]\n")
+        spreads = ", ".join(
+            f"..normalization_test_data_{chunk_idx}"
+            for chunk_idx in range(len(normalization_chunks))
+        )
+        module.write(
+            f"""
+///| Test data for normalization tests
+let normalization_test_data : ReadOnlyArray[(String, String, String, String, String)] = ReadOnlyArray::from_array([{spreads}])
+"""
+        )
 
         # Generate MoonBit inline tests for normalization
         module.write("""
