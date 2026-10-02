@@ -58,6 +58,9 @@ jobs:
           make all
           git diff --exit-code
 
+      - name: moon check (warnings are errors)
+        run: moon check --deny-warn --target all
+
       - name: moon info and moon fmt
         run: |
           make info
