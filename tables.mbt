@@ -316,7 +316,7 @@ fn WidthInfo::unset_vs1_2(self : WidthInfo) -> WidthInfo {
 ///|
 /// The version of [Unicode](http://www.unicode.org/)
 /// that this version of unicode-width is based on.
-pub let unicode_version : (Int, Int, Int) = (16, 0, 0)
+pub let unicode_version : (Int32, Int32, Int32) = (16, 0, 0)
 
 ///| Returns the [UAX #11](https://www.unicode.org/reports/tr11/) based width of `c` by
 
@@ -334,7 +334,7 @@ pub let unicode_version : (Int, Int, Int) = (16, 0, 0)
 
 ///|
 /// `make_tables` function in `unicode.py`) you must ensure that this code reflects those changes.
-fn lookup_width(c : Char) -> (UInt, WidthInfo) {
+fn lookup_width(c : Char) -> (UInt32, WidthInfo) {
   let cp = c.to_int()
 
   let t1_offset = width_root[cp >> 13]
@@ -360,20 +360,20 @@ fn lookup_width(c : Char) -> (UInt, WidthInfo) {
     match c {
       '\u{A}' => (1, line_feed_width_info)
       '\u{5DC}' => (1, hebrew_letter_lamed_width_info)
-      '\u{622}'..='\u{882}' => (1, joining_group_alef_width_info)
-      '\u{1780}'..='\u{17AF}' => (1, khmer_coeng_eligible_letter_width_info)
+      '\u{622}'..<='\u{882}' => (1, joining_group_alef_width_info)
+      '\u{1780}'..<='\u{17AF}' => (1, khmer_coeng_eligible_letter_width_info)
       '\u{17D8}' => (3, default_width_info)
       '\u{1A10}' => (1, buginese_letter_ya_width_info)
-      '\u{2D31}'..='\u{2D6F}' => (1, tifinagh_consonant_width_info)
-      '\u{A4FC}'..='\u{A4FD}' => (1, lisu_tone_letter_mya_na_jeu_width_info)
+      '\u{2D31}'..<='\u{2D6F}' => (1, tifinagh_consonant_width_info)
+      '\u{A4FC}'..<='\u{A4FD}' => (1, lisu_tone_letter_mya_na_jeu_width_info)
       '\u{FE01}' => (0, variation_selector_1_or_2_width_info)
       '\u{FE0E}' => (0, variation_selector_15_width_info)
       '\u{FE0F}' => (0, variation_selector_16_width_info)
       '\u{10C03}' => (1, old_turkic_letter_orkhon_i_width_info)
       '\u{16D67}' => (1, kirat_rai_vowel_sign_e_width_info)
       '\u{16D68}' => (1, kirat_rai_vowel_sign_ai_width_info)
-      '\u{1F1E6}'..='\u{1F1FF}' => (1, regional_indicator_width_info)
-      '\u{1F3FB}'..='\u{1F3FF}' => (2, emoji_modifier_width_info)
+      '\u{1F1E6}'..<='\u{1F1FF}' => (1, regional_indicator_width_info)
+      '\u{1F3FB}'..<='\u{1F3FF}' => (2, emoji_modifier_width_info)
       _ => (2, emoji_presentation_width_info)
     }
   }
@@ -385,7 +385,7 @@ fn lookup_width(c : Char) -> (UInt, WidthInfo) {
 
 ///|
 /// Ambiguous width characters are treated as narrow.
-fn char_width_impl(c : Char) -> Int? {
+fn char_width_impl(c : Char) -> Int32? {
   if c < '\u{7F}' {
     if c >= '\u{20}' {
       // U+0020 to U+007F (exclusive) are single-width ASCII codepoints
@@ -407,7 +407,7 @@ fn char_width_impl(c : Char) -> Int? {
 
 ///|
 /// Ambiguous width characters are treated as narrow.
-fn width_in_str(c : Char, next_info : WidthInfo) -> (Int, WidthInfo) {
+fn width_in_str(c : Char, next_info : WidthInfo) -> (Int32, WidthInfo) {
   let mut next_info = next_info
 
   // Special handling for Arabic combining marks to preserve ligature state
@@ -697,7 +697,7 @@ fn width_in_str(c : Char, next_info : WidthInfo) -> (Int, WidthInfo) {
 }
 
 ///|
-fn str_width_impl(s : StringView) -> Int {
+fn str_width_impl(s : StringView) -> Int32 {
   s
   .rev_iter()
   .fold(init=(0, default_width_info), fn(acc, c) {
@@ -724,7 +724,7 @@ fn str_width_impl(s : StringView) -> Int {
 ///|
 /// `make_tables` function in `unicode.py`) you must ensure that this code reflects those changes.
 // CJK variant
-fn lookup_width_cjk(c : Char) -> (UInt, WidthInfo) {
+fn lookup_width_cjk(c : Char) -> (UInt32, WidthInfo) {
   let cp = c.to_int()
 
   let t1_offset = width_root_cjk[cp >> 13]
@@ -751,19 +751,19 @@ fn lookup_width_cjk(c : Char) -> (UInt, WidthInfo) {
       '\u{A}' => (1, line_feed_width_info)
       '\u{338}' => (0, combining_long_solidus_overlay_width_info)
       '\u{5DC}' => (1, hebrew_letter_lamed_width_info)
-      '\u{622}'..='\u{882}' => (1, joining_group_alef_width_info)
-      '\u{1780}'..='\u{17AF}' => (1, khmer_coeng_eligible_letter_width_info)
+      '\u{622}'..<='\u{882}' => (1, joining_group_alef_width_info)
+      '\u{1780}'..<='\u{17AF}' => (1, khmer_coeng_eligible_letter_width_info)
       '\u{17D8}' => (3, default_width_info)
       '\u{1A10}' => (1, buginese_letter_ya_width_info)
-      '\u{2D31}'..='\u{2D6F}' => (1, tifinagh_consonant_width_info)
-      '\u{A4FC}'..='\u{A4FD}' => (1, lisu_tone_letter_mya_na_jeu_width_info)
+      '\u{2D31}'..<='\u{2D6F}' => (1, tifinagh_consonant_width_info)
+      '\u{A4FC}'..<='\u{A4FD}' => (1, lisu_tone_letter_mya_na_jeu_width_info)
       '\u{FE00}' => (0, variation_selector_1_or_2_width_info)
       '\u{FE0F}' => (0, variation_selector_16_width_info)
       '\u{10C03}' => (1, old_turkic_letter_orkhon_i_width_info)
       '\u{16D67}' => (1, kirat_rai_vowel_sign_e_width_info)
       '\u{16D68}' => (1, kirat_rai_vowel_sign_ai_width_info)
-      '\u{1F1E6}'..='\u{1F1FF}' => (1, regional_indicator_width_info)
-      '\u{1F3FB}'..='\u{1F3FF}' => (2, emoji_modifier_width_info)
+      '\u{1F1E6}'..<='\u{1F1FF}' => (1, regional_indicator_width_info)
+      '\u{1F3FB}'..<='\u{1F3FF}' => (2, emoji_modifier_width_info)
       _ => (2, emoji_presentation_width_info)
     }
   }
@@ -776,7 +776,7 @@ fn lookup_width_cjk(c : Char) -> (UInt, WidthInfo) {
 ///|
 /// Ambiguous width characters are treated as wide.
 // CJK variant
-fn char_width_cjk_impl(c : Char) -> Int? {
+fn char_width_cjk_impl(c : Char) -> Int32? {
   if c < '\u{7F}' {
     if c >= '\u{20}' {
       // U+0020 to U+007F (exclusive) are single-width ASCII codepoints
@@ -799,7 +799,7 @@ fn char_width_cjk_impl(c : Char) -> Int? {
 ///|
 /// Ambiguous width characters are treated as wide.
 // CJK variant
-fn width_in_str_cjk(c : Char, next_info : WidthInfo) -> (Int, WidthInfo) {
+fn width_in_str_cjk(c : Char, next_info : WidthInfo) -> (Int32, WidthInfo) {
   let mut next_info = next_info
 
   // Special handling for Arabic combining marks to preserve ligature state
@@ -1103,7 +1103,7 @@ fn width_in_str_cjk(c : Char, next_info : WidthInfo) -> (Int, WidthInfo) {
 // CJK variant
 
 ///|
-fn str_width_cjk_impl(s : StringView) -> Int {
+fn str_width_cjk_impl(s : StringView) -> Int32 {
   s
   .rev_iter()
   .fold(init=(0, default_width_info), fn(acc, c) {
@@ -1152,12 +1152,12 @@ fn is_transparent_zero_width(c : Char) -> Bool {
 fn is_char_ligature_transparent(c : Char) -> Bool {
   match c {
     '\u{34F}' => true
-    '\u{17B4}'..='\u{17B5}' => true
-    '\u{180B}'..='\u{180D}' => true
+    '\u{17B4}'..<='\u{17B5}' => true
+    '\u{180B}'..<='\u{180D}' => true
     '\u{180F}' => true
     '\u{200D}' => true
-    '\u{FE00}'..='\u{FE0F}' => true
-    '\u{E0100}'..='\u{E01EF}' => true
+    '\u{FE00}'..<='\u{FE0F}' => true
+    '\u{E0100}'..<='\u{E01EF}' => true
     _ => false
   }
 }
@@ -1327,7 +1327,7 @@ fn is_emoji_modifier_base(c : Char) -> Bool {
 
 ///|
 /// Autogenerated. 1 sub-table(s). Consult [`lookup_width`] for layout info.
-let width_root : ReadOnlyArray[UInt] = [
+let width_root : ReadOnlyArray[UInt32] = [
   0x00, 0x01, 0x02, 0x02, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B,
   0x0C, 0x0D, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x0E, 0x02, 0x02, 0x02, 0x02,
   0x02, 0x02, 0x02, 0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
@@ -1352,7 +1352,7 @@ let width_root : ReadOnlyArray[UInt] = [
 ///|
 /// Autogenerated. 16 sub-table(s). Consult [`lookup_width`] for layout info.
 // CJK only
-let width_root_cjk : ReadOnlyArray[UInt] = [
+let width_root_cjk : ReadOnlyArray[UInt32] = [
   0x10, 0x11, 0x02, 0x02, 0x02, 0x03, 0x04, 0x12, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B,
   0x0C, 0x13, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x02, 0x0E, 0x02, 0x02, 0x02, 0x02,
   0x02, 0x02, 0x02, 0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08,
@@ -1378,7 +1378,7 @@ let width_root_cjk : ReadOnlyArray[UInt] = [
 
 ///|
 /// Autogenerated. 4 sub-table(s). Consult [`lookup_width`] for layout info.
-let width_middle : ReadOnlyArray[ReadOnlyArray[UInt]] = [
+let width_middle : ReadOnlyArray[ReadOnlyArray[UInt32]] = [
   [
     0x00, 0x01, 0x02, 0x02, 0x02, 0x02, 0x03, 0x02, 0x02, 0x04, 0x02, 0x05, 0x06,
     0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13,
@@ -1529,7 +1529,7 @@ let width_middle : ReadOnlyArray[ReadOnlyArray[UInt]] = [
 
 ///|
 /// Autogenerated. 184 sub-table(s). Consult [`lookup_width`] for layout info.
-let width_leaves : ReadOnlyArray[ReadOnlyArray[UInt]] = [
+let width_leaves : ReadOnlyArray[ReadOnlyArray[UInt32]] = [
   [
     0x55, 0x55, 0x75, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
     0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
@@ -2481,7 +2481,7 @@ let width_leaves : ReadOnlyArray[ReadOnlyArray[UInt]] = [
 
 ///|
 /// FIXME: can we get better compression?
-let non_transparent_zero_widths : ReadOnlyArray[(Int, Int)] = [
+let non_transparent_zero_widths : ReadOnlyArray[(Int32, Int32)] = [
   (0x000605, 0x000605),
   (0x000890, 0x000891),
   (0x0008E2, 0x0008E2),
@@ -2565,7 +2565,7 @@ let non_transparent_zero_widths : ReadOnlyArray[(Int, Int)] = [
 ///|
 /// FIXME: can we get better compression?
 // CJK only
-let solidus_transparent : ReadOnlyArray[(Int, Int)] = [
+let solidus_transparent : ReadOnlyArray[(Int32, Int32)] = [
   (0x000300, 0x000333),
   (0x000339, 0x00036F),
   (0x000483, 0x000487),
@@ -2773,7 +2773,7 @@ let solidus_transparent : ReadOnlyArray[(Int, Int)] = [
 
 ///|
 /// to get whether it can start an emoji presentation sequence.
-let emoji_presentation_leaves : ReadOnlyArray[ReadOnlyArray[UInt]] = [
+let emoji_presentation_leaves : ReadOnlyArray[ReadOnlyArray[UInt32]] = [
   [
     0x00, 0x00, 0x00, 0x00, 0x08, 0x04, 0xFF, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x42, 0x00, 0x00, 0x00, 0x00,
@@ -2861,7 +2861,7 @@ let emoji_presentation_leaves : ReadOnlyArray[ReadOnlyArray[UInt]] = [
 ]
 
 ///|
-let text_presentation_leaf_0 : ReadOnlyArray[(UInt, UInt)] = [
+let text_presentation_leaf_0 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x1A, 0x1B),
   (0xE9, 0xEC),
   (0xF0, 0xF0),
@@ -2869,10 +2869,10 @@ let text_presentation_leaf_0 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let text_presentation_leaf_1 : ReadOnlyArray[(UInt, UInt)] = [(0xFD, 0xFE)]
+let text_presentation_leaf_1 : ReadOnlyArray[(UInt32, UInt32)] = [(0xFD, 0xFE)]
 
 ///|
-let text_presentation_leaf_2 : ReadOnlyArray[(UInt, UInt)] = [
+let text_presentation_leaf_2 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x14, 0x15),
   (0x48, 0x53),
   (0x7F, 0x7F),
@@ -2891,7 +2891,7 @@ let text_presentation_leaf_2 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let text_presentation_leaf_3 : ReadOnlyArray[(UInt, UInt)] = [
+let text_presentation_leaf_3 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x05, 0x05),
   (0x0A, 0x0B),
   (0x28, 0x28),
@@ -2905,17 +2905,17 @@ let text_presentation_leaf_3 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let text_presentation_leaf_4 : ReadOnlyArray[(UInt, UInt)] = [
+let text_presentation_leaf_4 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x1B, 0x1C),
   (0x50, 0x50),
   (0x55, 0x55),
 ]
 
 ///|
-let text_presentation_leaf_5 : ReadOnlyArray[(UInt, UInt)] = [(0x04, 0x04)]
+let text_presentation_leaf_5 : ReadOnlyArray[(UInt32, UInt32)] = [(0x04, 0x04)]
 
 ///|
-let text_presentation_leaf_6 : ReadOnlyArray[(UInt, UInt)] = [
+let text_presentation_leaf_6 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x0D, 0x0F),
   (0x15, 0x15),
   (0x1C, 0x1C),
@@ -2932,7 +2932,7 @@ let text_presentation_leaf_6 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let text_presentation_leaf_7 : ReadOnlyArray[(UInt, UInt)] = [
+let text_presentation_leaf_7 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x08, 0x08),
   (0x15, 0x15),
   (0x1F, 0x1F),
@@ -2958,7 +2958,7 @@ let text_presentation_leaf_7 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let text_presentation_leaf_8 : ReadOnlyArray[(UInt, UInt)] = [
+let text_presentation_leaf_8 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x08, 0x08),
   (0x0D, 0x0D),
   (0x12, 0x13),
@@ -2966,7 +2966,7 @@ let text_presentation_leaf_8 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let text_presentation_leaf_9 : ReadOnlyArray[(UInt, UInt)] = [
+let text_presentation_leaf_9 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x10, 0x10),
   (0x87, 0x87),
   (0x8D, 0x8D),
@@ -2980,16 +2980,16 @@ let text_presentation_leaf_9 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let emoji_modifier_leaf_0 : ReadOnlyArray[(UInt, UInt)] = [
+let emoji_modifier_leaf_0 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x1D, 0x1D),
   (0xF9, 0xF9),
 ]
 
 ///|
-let emoji_modifier_leaf_1 : ReadOnlyArray[(UInt, UInt)] = [(0x0A, 0x0D)]
+let emoji_modifier_leaf_1 : ReadOnlyArray[(UInt32, UInt32)] = [(0x0A, 0x0D)]
 
 ///|
-let emoji_modifier_leaf_2 : ReadOnlyArray[(UInt, UInt)] = [
+let emoji_modifier_leaf_2 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x85, 0x85),
   (0xC2, 0xC4),
   (0xC7, 0xC7),
@@ -2997,7 +2997,7 @@ let emoji_modifier_leaf_2 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let emoji_modifier_leaf_3 : ReadOnlyArray[(UInt, UInt)] = [
+let emoji_modifier_leaf_3 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x42, 0x43),
   (0x46, 0x50),
   (0x66, 0x78),
@@ -3010,7 +3010,7 @@ let emoji_modifier_leaf_3 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let emoji_modifier_leaf_4 : ReadOnlyArray[(UInt, UInt)] = [
+let emoji_modifier_leaf_4 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x74, 0x75),
   (0x7A, 0x7A),
   (0x90, 0x90),
@@ -3018,7 +3018,7 @@ let emoji_modifier_leaf_4 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let emoji_modifier_leaf_5 : ReadOnlyArray[(UInt, UInt)] = [
+let emoji_modifier_leaf_5 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x45, 0x47),
   (0x4B, 0x4F),
   (0xA3, 0xA3),
@@ -3028,7 +3028,7 @@ let emoji_modifier_leaf_5 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let emoji_modifier_leaf_6 : ReadOnlyArray[(UInt, UInt)] = [
+let emoji_modifier_leaf_6 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0x0C, 0x0C),
   (0x0F, 0x0F),
   (0x18, 0x1F),
@@ -3044,7 +3044,7 @@ let emoji_modifier_leaf_6 : ReadOnlyArray[(UInt, UInt)] = [
 ]
 
 ///|
-let emoji_modifier_leaf_7 : ReadOnlyArray[(UInt, UInt)] = [
+let emoji_modifier_leaf_7 : ReadOnlyArray[(UInt32, UInt32)] = [
   (0xC3, 0xC5),
   (0xF0, 0xF8),
 ]

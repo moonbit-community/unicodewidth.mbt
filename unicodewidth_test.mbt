@@ -9,8 +9,8 @@
 #callsite(autofill(loc))
 fn assert_str_width(
   s : String,
-  nocjk : Int,
-  cjk : Int,
+  nocjk : Int32,
+  cjk : Int32,
   loc~ : SourceLoc,
 ) -> Unit raise {
   @debug.assert_eq(
@@ -27,8 +27,8 @@ fn assert_str_width(
 #callsite(autofill(loc))
 fn assert_char_width(
   c : Char,
-  nocjk : Int?,
-  cjk : Int?,
+  nocjk : Int32?,
+  cjk : Int32?,
   loc~ : SourceLoc,
 ) -> Unit raise {
   @debug.assert_eq(
@@ -265,7 +265,7 @@ test "test_lisu_tones" {
     for c2 in 0xA4FC..<=0xA4FD {
       let s = c1.unsafe_to_char().to_string() + c2.unsafe_to_char().to_string()
       match (c1, c2) {
-        ('\u{A4F8}'..='\u{A4FB}', '\u{A4FC}'..='\u{A4FD}') =>
+        ('\u{A4F8}'..<='\u{A4FB}', '\u{A4FC}'..<='\u{A4FD}') =>
           assert_str_width(s, 1, 1)
         _ => assert_str_width(s, 2, 2)
       }
