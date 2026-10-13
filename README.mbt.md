@@ -131,7 +131,7 @@ test {
 ///|
 test {
   // Text alignment in terminal
-  fn align_text(text : String, width : Int, align : String) -> String {
+  fn align_text(text : String, width : Int32, align : String) -> String {
     let text_width = @unicodewidth.str_width(text)
     match align {
       "left" => text + " ".repeat(width - text_width)
