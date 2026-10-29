@@ -263,12 +263,7 @@ test "test_lisu_tones" {
   }
   for c1 in 0xA4F8..<=0xA4FB {
     for c2 in 0xA4FC..<=0xA4FD {
-      let s = c1.unsafe_to_char().to_string() + c2.unsafe_to_char().to_string()
-      match (c1, c2) {
-        ('\u{A4F8}'..<='\u{A4FB}', '\u{A4FC}'..<='\u{A4FD}') =>
-          assert_str_width(s, 1, 1)
-        _ => assert_str_width(s, 2, 2)
-      }
+      assert_str_width("\{c1.unsafe_to_char()}\{c2.unsafe_to_char()}", 1, 1)
     }
   }
   assert_str_width("ꓪꓹ", 2, 2)
@@ -376,7 +371,6 @@ test "test_tifinagh_biconsonants" {
   assert_str_width("\u{2D7F}", 1, 1)
   assert_str_width("\u{2D4F}\u{200D}\u{2D3E}", 1, 1)
   assert_str_width("\u{2D4F}\u{2D7F}\u{2D3E}", 1, 1)
-  assert_str_width("\u{2D4F}\u{200D}\u{2D3E}", 1, 1)
   assert_str_width(
     "\u{2D4F}\u{FE0F}\u{200D}\u{2D7F}\u{FE0E}\u{200D}\u{17B5}\u{2D3E}", 1, 1,
   )
@@ -417,8 +411,7 @@ test "test_khmer_coeng" {
   ]
   for i in 0..<65536 {
     let c = i.unsafe_to_char()
-    let is_khmer = khmer_chars.contains(c)
-    if is_khmer {
+    if khmer_chars.contains(c) {
       assert_str_width("\u{17D2}\{c}", 0, 0)
       assert_str_width("\u{17D2}\u{200D}\u{200D}\{c}", 0, 0)
     } else {
