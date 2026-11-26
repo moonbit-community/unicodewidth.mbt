@@ -9,21 +9,23 @@
 ///
 /// Values are produced by `DisplayLine` methods. They are intentionally opaque
 /// so callers cannot accidentally point into the middle of a display unit.
-struct TextualPosition(Int) derive(Eq)
+#derive(Eq)
+struct TextualPosition(Int32)
 
 ///|
 /// A display-column position in a single `DisplayLine`.
-struct DisplayPosition(Int) derive(Eq)
+#derive(Eq)
+struct DisplayPosition(Int32)
 
 ///|
 /// Build a single-line display position. Negative columns are clamped to zero.
-pub fn DisplayPosition::new(column~ : Int) -> DisplayPosition {
+pub fn DisplayPosition::new(column~ : Int32) -> DisplayPosition {
   DisplayPosition(column.max(0))
 }
 
 ///|
 /// The zero-based terminal display column.
-pub fn DisplayPosition::column(self : DisplayPosition) -> Int {
+pub fn DisplayPosition::column(self : DisplayPosition) -> Int32 {
   self.0
 }
 
@@ -31,7 +33,7 @@ pub fn DisplayPosition::column(self : DisplayPosition) -> Int {
 /// A terminal display unit with stable textual and display boundaries.
 struct DisplayUnit {
   text : StringView
-  width : Int
+  width : Int32
   textual_start : TextualPosition
   textual_end : TextualPosition
   display_start : DisplayPosition
@@ -46,7 +48,7 @@ pub fn DisplayUnit::text(self : DisplayUnit) -> StringView {
 
 ///|
 /// Display width of this unit in terminal cells.
-pub fn DisplayUnit::width(self : DisplayUnit) -> Int {
+pub fn DisplayUnit::width(self : DisplayUnit) -> Int32 {
   self.width
 }
 
@@ -79,16 +81,16 @@ pub fn DisplayUnit::display_end(self : DisplayUnit) -> DisplayPosition {
 struct DisplayLine {
   text : String
   units : Array[DisplayUnit]
-  width : Int
+  width : Int32
   cjk : Bool
 }
 
 ///|
 fn make_display_unit(
   text : StringView,
-  width : Int,
-  textual_index : Int,
-  display_column : Int,
+  width : Int32,
+  textual_index : Int32,
+  display_column : Int32,
 ) -> DisplayUnit {
   {
     text,
@@ -104,14 +106,14 @@ fn make_display_unit(
 fn flush_pending_unit(
   units : Array[DisplayUnit],
   source : String,
-  start : Int,
-  end : Int,
-  width : Int,
-  display_column : Int,
-) -> Int {
+  start : Int32,
+  end : Int32,
+  width : Int32,
+  display_column : Int32,
+) -> Int32 {
   units.push(
     make_display_unit(
-      source.view(start_offset=start, end_offset=end),
+      source.clamped_view(start~, end~),
       width,
       units.length(),
       display_column,
@@ -121,13 +123,13 @@ fn flush_pending_unit(
 }
 
 ///|
-fn single_unit_line(source : String, width : Int, cjk : Bool) -> DisplayLine {
+fn single_unit_line(source : String, width : Int32, cjk : Bool) -> DisplayLine {
   if source.length() == 0 {
-    { text: source, units: [], width, cjk }
+    { text: source, units: [], width, cjk, }
   } else {
     {
       text: source,
-      units: [make_display_unit(source.view(), width, 0, 0)],
+      units: [make_display_unit(source.clamped_view(), width, 0, 0)],
       width,
       cjk,
     }
@@ -152,7 +154,7 @@ fn display_units_for(source : String, cjk : Bool) -> Array[DisplayUnit] {
     } else {
       let next_end = cluster.start_offset() + cluster.length()
       let combined_width = str_width(
-        source.view(start_offset=pending_start, end_offset=next_end),
+        source.clamped_view(start=pending_start, end=next_end),
         cjk~,
       )
       if combined_width == pending_width + grapheme_width {
@@ -183,7 +185,7 @@ fn display_units_for(source : String, cjk : Bool) -> Array[DisplayUnit] {
 ///
 /// The returned `DisplayLine` exposes safe textual boundaries and display
 /// columns for TUI editing, truncation, and hit testing.
-pub fn display_line(text : StringView, cjk? : Bool = false) -> DisplayLine {
+pub fn display_line(text : StringView, cjk~ : Bool = false) -> DisplayLine {
   let source = text.to_owned()
   let width = str_width(source, cjk~)
   let units = display_units_for(source, cjk)
@@ -192,7 +194,7 @@ pub fn display_line(text : StringView, cjk? : Bool = false) -> DisplayLine {
     unit_width += unit.width()
   }
   if unit_width == width {
-    { text: source, units, width, cjk }
+    { text: source, units, width, cjk, }
   } else {
     single_unit_line(source, width, cjk)
   }
@@ -200,7 +202,7 @@ pub fn display_line(text : StringView, cjk? : Bool = false) -> DisplayLine {
 
 ///|
 /// Total display width of this line in terminal cells.
-pub fn DisplayLine::width(self : DisplayLine) -> Int {
+pub fn DisplayLine::width(self : DisplayLine) -> Int32 {
   self.width
 }
 
@@ -227,7 +229,7 @@ pub fn DisplayLine::end(self : DisplayLine) -> TextualPosition {
 fn DisplayLine::position_index(
   self : DisplayLine,
   position : TextualPosition,
-) -> Int {
+) -> Int32 {
   position.0.clamp(min=0, max=self.units.length())
 }
 
@@ -334,8 +336,8 @@ pub fn DisplayLine::slice(
 /// is dropped.
 pub fn DisplayLine::truncate(
   self : DisplayLine,
-  width : Int,
-  suffix? : StringView = "…",
+  width : Int32,
+  suffix~ : StringView = "…",
 ) -> String {
   guard width > 0 else { return "" }
   guard self.width > width else { return self.text }

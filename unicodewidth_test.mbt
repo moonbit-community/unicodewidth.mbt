@@ -645,7 +645,7 @@ test "emoji_test_file" {
       .trim(chars=" \t\n")
       .split(" ")
       .map(s => {
-        (try! @string.parse_uint(s, base=16))
+        (try! @string.parse_uint(s, radix=16))
         .reinterpret_as_int()
         .unsafe_to_char()
       })
