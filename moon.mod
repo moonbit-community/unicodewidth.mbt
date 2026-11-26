@@ -3,7 +3,7 @@ name = "moonbit-community/unicodewidth"
 version = "0.2.1"
 
 import {
-  "kawaz/grapheme@0.10.2",
+  "moonbit-community/unicode-segmentation@0.8.1",
   "moonbitlang/x@0.4.44",
 }
 

@@ -17,9 +17,9 @@ and textual insertion boundaries are different concepts.
 
 ## Target files and surfaces
 
-- `moon.mod`: add the grapheme dependency used to determine legal text
-  boundaries.
-- `moon.pkg`: import the grapheme package for the root package.
+- `moon.mod`: add the `moonbit-community/unicode-segmentation` dependency used
+  to determine legal text boundaries.
+- `moon.pkg`: import the segmentation package for the root package.
 - `display_line.mbt`: implementation of the new API.
 - `unicodewidth_test.mbt`: focused tests for display units, position mapping,
   slicing, and truncation.
@@ -63,8 +63,8 @@ can be added later if profiling shows array allocation is a real issue.
 
 ## Next implementation step
 
-Implement `DisplayLine` using `kawaz/grapheme` as the textual boundary source
-and the existing `str_width` rules for unit widths.
+Implement `DisplayLine` using `moonbit-community/unicode-segmentation` as the
+textual boundary source and the existing `str_width` rules for unit widths.
 
 ## Validation plan
 

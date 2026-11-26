@@ -2,13 +2,13 @@
 package "moonbit-community/unicodewidth"
 
 // Values
-pub fn char_width(Char, cjk? : Bool) -> Int?
+pub fn char_width(Char, cjk? : Bool) -> Int32?
 
 pub fn display_line(StringView, cjk? : Bool) -> DisplayLine
 
-pub fn str_width(StringView, cjk? : Bool) -> Int
+pub fn str_width(StringView, cjk? : Bool) -> Int32
 
-pub let unicode_version : (Int, Int, Int)
+pub let unicode_version : (Int32, Int32, Int32)
 
 // Errors
 
@@ -22,13 +22,14 @@ pub fn DisplayLine::slice(Self, TextualPosition, TextualPosition) -> String
 pub fn DisplayLine::start(Self) -> TextualPosition
 pub fn DisplayLine::textual_position_at_or_after(Self, DisplayPosition) -> TextualPosition
 pub fn DisplayLine::textual_position_at_or_before(Self, DisplayPosition) -> TextualPosition
-pub fn DisplayLine::truncate(Self, Int, suffix? : StringView) -> String
+pub fn DisplayLine::truncate(Self, Int32, suffix? : StringView) -> String
 pub fn DisplayLine::units(Self) -> Array[DisplayUnit]
-pub fn DisplayLine::width(Self) -> Int
+pub fn DisplayLine::width(Self) -> Int32
 
-type DisplayPosition derive(Eq)
-pub fn DisplayPosition::column(Self) -> Int
-pub fn DisplayPosition::new(column~ : Int) -> Self
+#derive(Eq)
+type DisplayPosition
+pub fn DisplayPosition::column(Self) -> Int32
+pub fn DisplayPosition::new(column~ : Int32) -> Self
 
 type DisplayUnit
 pub fn DisplayUnit::display_end(Self) -> DisplayPosition
@@ -36,9 +37,10 @@ pub fn DisplayUnit::display_start(Self) -> DisplayPosition
 pub fn DisplayUnit::text(Self) -> StringView
 pub fn DisplayUnit::textual_end(Self) -> TextualPosition
 pub fn DisplayUnit::textual_start(Self) -> TextualPosition
-pub fn DisplayUnit::width(Self) -> Int
+pub fn DisplayUnit::width(Self) -> Int32
 
-type TextualPosition derive(Eq)
+#derive(Eq)
+type TextualPosition
 
 // Type aliases
 

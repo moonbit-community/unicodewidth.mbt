@@ -1,5 +1,5 @@
 import {
-  "kawaz/grapheme",
+  "moonbit-community/unicode-segmentation" @segmentation,
 }
 
 import {

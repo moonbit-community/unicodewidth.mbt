@@ -142,15 +142,15 @@ fn display_units_for(source : String, cjk : Bool) -> Array[DisplayUnit] {
   let mut pending_end = 0
   let mut pending_width = 0
   let mut has_pending = false
-  for grapheme in @grapheme.grapheme_iter(source) {
-    let grapheme_width = str_width(grapheme, cjk~)
+  for cluster in @segmentation.graphemes(source) {
+    let grapheme_width = str_width(cluster, cjk~)
     if !has_pending {
-      pending_start = grapheme.start_offset()
-      pending_end = grapheme.start_offset() + grapheme.length()
+      pending_start = cluster.start_offset()
+      pending_end = cluster.start_offset() + cluster.length()
       pending_width = grapheme_width
       has_pending = true
     } else {
-      let next_end = grapheme.start_offset() + grapheme.length()
+      let next_end = cluster.start_offset() + cluster.length()
       let combined_width = str_width(
         source.view(start_offset=pending_start, end_offset=next_end),
         cjk~,
@@ -159,7 +159,7 @@ fn display_units_for(source : String, cjk : Bool) -> Array[DisplayUnit] {
         display_column = flush_pending_unit(
           units, source, pending_start, pending_end, pending_width, display_column,
         )
-        pending_start = grapheme.start_offset()
+        pending_start = cluster.start_offset()
         pending_end = next_end
         pending_width = grapheme_width
       } else {
