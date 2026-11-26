@@ -2,11 +2,11 @@
 package "moonbit-community/unicodewidth"
 
 // Values
-pub fn char_width(Char, cjk? : Bool) -> Int?
+pub fn char_width(Char, cjk? : Bool) -> Int32?
 
-pub fn str_width(StringView, cjk? : Bool) -> Int
+pub fn str_width(StringView, cjk? : Bool) -> Int32
 
-pub let unicode_version : (Int, Int, Int)
+pub let unicode_version : (Int32, Int32, Int32)
 
 // Errors
 
